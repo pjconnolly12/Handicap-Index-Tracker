@@ -3,6 +3,7 @@
 
 import math
 import statistics
+import pickle
     
 def differential(score,course_rating,slope_rating):
     diff = (score - course_rating) * 113 / slope_rating
@@ -14,28 +15,28 @@ def data_gather():
     slope = int(input("Enter the slope rating: "))
     return differential(score,course,slope)
 
-with open("handicap.txt", "a+") as hc:
-    hc.write("[],"
-             .format(data_gather()))
+mylist = []
+with open('handicap.pkl', 'rb+') as hc:
+    mylist = pickle.load(hc)
+    mylist.append(data_gather())
+    hc.seek(0)
+    pickle.dump(mylist, hc, pickle.HIGHEST_PROTOCOL)
 
-scores = []
+with open('handicap.pkl', 'rb') as hc:
+    scores = pickle.load(hc)
 
-with open("handicap.txt", "r") as hc:
-    scores.append(hc.read())
+score_sort = sorted(scores)
+print(score_sort)
 
-sorted(scores)
-print(scores)
-"""
-if len(scores) < 10:
-    index = scores[0] * .96
-    print(index)
+if len(score_sort) < 10:
+    index = score_sort[0] * .96
+    print(math.floor(index*100)/100)
 else:
-    if len(scores) < 19:
-        x = scores[:5] 
+    if len(score_sort) < 19:
+        x = score_sort[:5] 
         index = statistics.mean(x) * .96
         print(index)
     else:
-        x = scores[:10]
+        x = score_sort[:10]
         index = statistics.mean(x) * .96
         print(index)
-"""
